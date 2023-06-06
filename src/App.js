@@ -13,6 +13,8 @@ import Footer from "./components/Footer";
 import MLogin from "./mobile_view/MLogin";
 
 function App() {
+  document.title = "GMX Free E-Mail";
+
   return (
     <>
       <div className="web">

